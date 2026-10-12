@@ -1,0 +1,31 @@
+# Agent OS canonical standards index
+#
+# Source of truth for standard descriptions. `scripts/project-install.ps1` seeds
+# each project's `agent-os/standards/index.yml` from these entries, falling back
+# to the project's existing descriptions and then to a placeholder.
+#
+# Keep descriptions to one short sentence. Folder names match the directories
+# under a profile's `standards/` tree. "root" is reserved for `.md` files that
+# sit at the top level of the standards tree.
+
+git:
+  workflow:
+    description: Conventional Commits, per-account git identity, branch/merge workflow, and secret hygiene
+
+powershell:
+  safety:
+    description: Destructive-operation guards, error handling, secret handling, and execution policy for PowerShell
+  style:
+    description: PowerShell naming, approved verbs, structure, formatting, and output conventions
+
+python:
+  code:
+    description: Python 3.13 environment, PEP 604 typing, pydantic v2, pytest, src layout, and sensitive-data rules
+
+global:
+  tech-stack:
+    description: Canonical workstation tech stack, script organization, testing, and version-control conventions
+
+recovery:
+  policy:
+    description: Recovery guard levels, sanitization rules, filesystem boundaries, and no-live-wallet-operation policy

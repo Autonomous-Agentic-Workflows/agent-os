@@ -29,6 +29,28 @@ Read the [changelog](CHANGELOG.md)
 
 ---
 
+### Running on Windows (this install)
+
+The bash installers (`scripts/*.sh`) require bash/WSL. On hosts where bash is
+unavailable, use the PowerShell 7 ports instead - run them from the project
+directory you want to install into:
+
+```powershell
+# install (default profile, or -Profile <name>)
+pwsh -File scripts/project-install.ps1 -Profile recovery -Force
+
+# update commands only
+pwsh -File scripts/project-install.ps1 -CommandsOnly
+
+# sync project standards back into a profile
+pwsh -File scripts/sync-to-profile.ps1 -Profile recovery -All -Overwrite
+```
+
+Add `-WhatIf` to preview. Profile inheritance comes from `config.yml`; standard
+descriptions are seeded from `standards-index.yml`.
+
+---
+
 ### Created by Brian Casel @ Builder Methods
 
 Created by Brian Casel, the creator of [Builder Methods](https://buildermethods.com), where Brian helps professional software developers and teams build with AI.

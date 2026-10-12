@@ -5,6 +5,11 @@ https://buildermethods.com/agent-os
 
 ## Unreleased
 
+- Added PowerShell 7 ports of the install and sync tooling for Windows hosts where bash/WSL is unavailable: `scripts/project-install.ps1` and `scripts/sync-to-profile.ps1`. The PowerShell installer honors `config.yml` profile inheritance, regenerates `index.yml`, and installs commands.
+- Fixed the broken `recovery` profile: recovery standards now live in `profiles/recovery/standards/` (the profile declared in `config.yml` previously had no directory and `--profile recovery` failed).
+- Made `global/tech-stack.md` deliverable: moved it under `profiles/default/standards/global/` so it installs to `<project>/agent-os/standards/global/tech-stack.md` (where `/plan-product` expects it).
+- Added canonical `standards-index.yml`; the PowerShell installer seeds real index descriptions instead of placeholders.
+- Refreshed stale workstation references in the standards (single host `GUYN-PC`, `D:\` data volume, no embedded account emails, absolute DevKit Python path).
 - Fixed silent install failures caused by `((var++))` under `set -e` in `project-install.sh`, `sync-to-profile.sh`, and `common-functions.sh` (#328).
 - Replaced GNU-only `tac` in `project-install.sh` with a POSIX `awk` invocation so installs work on macOS without `coreutils` (#327).
 
