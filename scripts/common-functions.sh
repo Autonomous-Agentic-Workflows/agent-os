@@ -38,17 +38,17 @@ print_status() {
 
 # Print success message
 print_success() {
-    print_color "$GREEN" "✓ $1"
+    print_color "$GREEN" "[ok] $1"
 }
 
 # Print warning message
 print_warning() {
-    print_color "$YELLOW" "⚠️  $1"
+    print_color "$YELLOW" "[!]  $1"
 }
 
 # Print error message
 print_error() {
-    print_color "$RED" "✗ $1"
+    print_color "$RED" "[x] $1"
 }
 
 # Print verbose message (only in verbose mode)
