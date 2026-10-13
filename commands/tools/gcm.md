@@ -23,7 +23,7 @@ Fork of Git Credential Manager (GCM) - secure credential helper for Git. Usable 
 
 ## Setup (if `status: needs-setup`)
 
-- `dotnet build (requires .NET SDK)`
+- `needs .NET SDK to build (not verified present)`
 - `then: git config --global credential.helper manager`
 
 ## How agents use it

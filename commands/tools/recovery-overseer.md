@@ -7,7 +7,7 @@ Node/Express dashboard that also exposes a Model Context Protocol (JSON-RPC 2.0)
 - **Repo**: `Autonomous-Agentic-Workflows/Orchestrator`
 - **Path**: `D:\StudioProjects\Orchestrator\recovery_overseer`
 - **Kind**: mcp-server (node)
-- **Status**: `needs-setup`
+- **Status**: `ready`
 - **CLI**: `-`
 
 ## Interfaces
@@ -30,8 +30,7 @@ Node/Express dashboard that also exposes a Model Context Protocol (JSON-RPC 2.0)
 
 ## Setup (if `status: needs-setup`)
 
-- `cd recovery_overseer && npm install`
-- `requires Google Workspace OAuth + Cloud SQL/Firebase env`
+- `npm install  (DONE; esbuild binary rebuilt via npm rebuild)`
 
 ## Secrets required
 

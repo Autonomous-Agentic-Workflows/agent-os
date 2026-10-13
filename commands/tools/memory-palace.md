@@ -7,7 +7,7 @@ Next.js 14 'memory palace' knowledge app (Mongo/Mongoose, OpenAI, PostHog, Cloud
 - **Repo**: `Autonomous-Agentic-Workflows/memory-palace-with-brain`
 - **Path**: `D:\StudioProjects\memory-palace-with-brain`
 - **Kind**: web-app (node)
-- **Status**: `needs-setup`
+- **Status**: `ready`
 - **CLI**: `memory-palace`
 
 ## Interfaces
@@ -25,8 +25,8 @@ Next.js 14 'memory palace' knowledge app (Mongo/Mongoose, OpenAI, PostHog, Cloud
 
 ## Setup (if `status: needs-setup`)
 
-- `npm install`
-- `copy .env.example -> .env.local and fill secrets`
+- `npm install  (DONE)`
+- `copy .env.example -> .env.local and fill secrets to actually run`
 
 ## Skills shipped
 

@@ -5,12 +5,12 @@ External repos registered as tools for the agent fleet. Canonical source:
 
 | Command | id | kind | status |
 |---|---|---|---|
-| orchestrator | `orchestrator` | service | `needs-setup` |
-| recovery-overseer | `recovery-overseer` | mcp-server | `needs-setup` |
-| genai-mindmap | `genai-mindmap` | service | `needs-setup` |
-| agent-lightning | `agent-lightning` | cli+library | `needs-setup` |
-| paperclip | `paperclip` | cli | `needs-setup` |
-| memory-palace | `memory-palace` | web-app | `needs-setup` |
+| orchestrator | `orchestrator` | service | `ready` |
+| recovery-overseer | `recovery-overseer` | mcp-server | `ready` |
+| genai-mindmap | `genai-mindmap` | service | `ready` |
+| agent-lightning | `agent-lightning` | cli+library | `ready` |
+| paperclip | `paperclip` | cli | `blocked` |
+| memory-palace | `memory-palace` | web-app | `ready` |
 | gcm | `gcm` | system-tool | `needs-setup` |
 
 ## MCP access

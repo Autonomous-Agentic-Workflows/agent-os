@@ -1,11 +1,18 @@
 {
-  "version": 1,
+  "version": 2,
   "updated": "2026-10-13",
   "description": "Canonical cross-configuration registry. Each entry is an external repo wired as a usable tool for the agent fleet. Consumed by tools/mcp/fleet-tools (MCP server), commands/tools/*.md, and the MR3/MRA fleet registries.",
-  "toolchains": {
-    "node": { "path": "C:\\Program Files\\nodejs\\node.exe", "version": "v24.20.0" },
-    "npm": { "path": "C:\\Program Files\\nodejs\\npm.ps1", "global_bin": "C:\\Users\\jayla\\AppData\\Roaming\\npm" },
-    "python": { "path": "C:\\Users\\jayla\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe", "note": "WindowsApps shim; verify with 'py' or a real interpreter" }
+  "env": {
+    "uv": "L:\\tools\\uv\\uv.exe",
+    "uv_python_install_dir": "L:\\tools\\uv-python",
+    "uv_cache_dir": "L:\\uv-cache",
+    "managed_python": "L:\\tools\\uv-python\\cpython-3.12-windows-x86_64-none\\python.exe  (3.12.15)",
+    "venvs_dir": "D:\\StudioProjects\\.venvs",
+    "node": "C:\\Program Files\\nodejs\\node.exe  (v24.20.0)",
+    "npm": "11.19.0",
+    "npm_cache": "L:\\npm-cache",
+    "npm_global_bin": "C:\\Users\\jayla\\AppData\\Roaming\\npm",
+    "note": "No admin rights: the python.org installer fails with 0x5 (access denied), so Python is provided by uv (user-scope, on L:). The WindowsApps 'python' shim is non-functional; always use a venv interpreter."
   },
   "tools": [
     {
@@ -13,19 +20,21 @@
       "name": "vertex_orchestrator",
       "repo": "Autonomous-Agentic-Workflows/Orchestrator",
       "path": "D:\\StudioProjects\\Orchestrator",
+      "venv": "D:\\StudioProjects\\.venvs\\orchestrator",
       "kind": "service",
       "language": "python",
-      "status": "needs-setup",
+      "status": "ready",
       "summary": "Unified REST API that routes tasks to CrewAI (analysis), AutoGen (conversation) and Aider (edit) via Google Vertex AI. Hosts the recovery-overseer child service.",
       "interfaces": {
         "http": { "url": "http://localhost:8000", "run": "PYTHONPATH=src python -m vertex_orchestrator.server" },
         "python_api": { "import": "vertex_orchestrator", "entry": "Orchestrator(config).execute(task_type, task)" },
         "child_service": { "id": "recovery-overseer", "port": 3000 }
       },
-      "setup": ["python -m pip install -e . (from repo root)", "requires Google Cloud / Vertex AI credentials"],
+      "setup": ["uv pip install -e . + google-genai  (DONE into venv)"],
       "invoke_cli": "orchestrator",
       "skills": [],
-      "secrets": ["Google Cloud / Vertex AI service account", "Google Workspace OAuth (via recovery-overseer)"]
+      "secrets": ["Google Cloud / Vertex AI service account", "Google Workspace OAuth (via recovery-overseer)"],
+      "notes": "Core deps are just pydantic (+google-genai for the server); CrewAI/AutoGen/Aider are optional extras. Server uses stdlib http.server, no FastAPI."
     },
     {
       "id": "recovery-overseer",
@@ -34,13 +43,13 @@
       "path": "D:\\StudioProjects\\Orchestrator\\recovery_overseer",
       "kind": "mcp-server",
       "language": "node",
-      "status": "needs-setup",
+      "status": "ready",
       "summary": "Node/Express dashboard that also exposes a Model Context Protocol (JSON-RPC 2.0) server plus Google Workspace tools (Gmail, Slides, Tasks, Keep, Drive) and a Spark/Gemini analytics engine.",
       "interfaces": {
         "mcp_http": { "url": "http://localhost:3000/mcp", "proxy": "http://localhost:8000/overseer/mcp", "info": "http://localhost:8000/overseer/mcp/info" },
         "http": { "dev": "npm run dev", "build": "npm run build", "start": "node dist/server.cjs", "port": 3000 }
       },
-      "setup": ["cd recovery_overseer && npm install", "requires Google Workspace OAuth + Cloud SQL/Firebase env"],
+      "setup": ["npm install  (DONE; esbuild binary rebuilt via npm rebuild)"],
       "invoke_cli": null,
       "skills": [],
       "secrets": ["GOOGLE_* OAuth", "Cloud SQL / Firebase credentials", "GEMINI_API_KEY"]
@@ -50,15 +59,16 @@
       "name": "GenAIMindMapFlowBuilder",
       "repo": "Autonomous-Agentic-Workflows/GenAIMindMapFlowBuilder",
       "path": "D:\\StudioProjects\\GenAIMindMapFlowBuilder",
+      "venv": "D:\\StudioProjects\\.venvs\\genai-mindmap",
       "kind": "service",
       "language": "python",
-      "status": "needs-setup",
+      "status": "ready",
       "summary": "Modular FastAPI backend for AI-powered mind mapping with Neurite integration; routers for flows, qa, ingestion, sql and nodes. React+Vite frontend.",
       "interfaces": {
         "http": { "url": "http://localhost:8000", "run": "uvicorn backend.app:app --reload", "swagger": "http://localhost:8000/docs" },
         "frontend": { "path": "frontend", "run": "npm install && npm run dev" }
       },
-      "setup": ["python -m pip install -r backend/requirements_minimal.txt"],
+      "setup": ["backend/requirements_minimal.txt has a bad pin (starlette==1.3.1 conflicts with fastapi==0.104.1); installed with that line filtered -> starlette 0.27.0 (DONE)"],
       "invoke_cli": "mindmap",
       "skills": [],
       "notes": "Already agent-wired: GitHub-native Claude dispatch (.github/workflows/claude.yml), repository_dispatch 'claude-task', and a self-hosted 'genai-ollama-runner'."
@@ -68,16 +78,17 @@
       "name": "agent-lightning",
       "repo": "Autonomous-Agentic-Workflows/agent-lightning",
       "path": "D:\\StudioProjects\\agent-lightning",
+      "venv": "D:\\StudioProjects\\.venvs\\agent-lightning",
       "kind": "cli+library",
       "language": "python",
-      "status": "needs-setup",
+      "status": "ready",
       "summary": "Microsoft framework for training/optimizing AI agents; ships the 'agl' CLI (store, vllm, prometheus, agentops) and example FastMCP retrievers.",
       "interfaces": {
         "cli": { "bin": "agl", "subcommands": ["store", "vllm", "prometheus", "agentops"] },
         "python_api": { "import": "agentlightning" },
         "example_mcp": { "path": "examples\\rag\\wiki_retriever_mcp.py", "framework": "fastmcp" }
       },
-      "setup": ["python -m pip install agentlightning  (or: pip install -e . from repo root)"],
+      "setup": ["uv pip install agentlightning  (DONE -> 1.0.2 from PyPI). NOTE: the repo's dev version (0.3.1) is Unix-only (gunicorn imports fcntl) and cannot import on Windows; use the PyPI build."],
       "invoke_cli": "agl",
       "skills": []
     },
@@ -88,16 +99,16 @@
       "path": "D:\\StudioProjects\\paperclip-autonomous-agents",
       "kind": "cli",
       "language": "node",
-      "status": "needs-setup",
+      "status": "blocked",
       "summary": "Paperclip ('paperclipai') - app + CLI to orchestrate AI agent teams, with pluggable adapters (claude-local, codex-local, cursor-cloud/local, gemini-local, grok-local, opencode-local, pi-local, openclaw-gateway).",
       "interfaces": {
         "cli": { "bin": "paperclipai", "entry": "cli\\dist\\index.js", "dev": "npm run dev", "build": "npm run build" },
         "adapters": ["adapter-claude-local", "adapter-codex-local", "adapter-cursor-cloud", "adapter-cursor-local", "adapter-gemini-local", "adapter-grok-local", "adapter-opencode-local", "adapter-pi-local", "adapter-openclaw-gateway"]
       },
-      "setup": ["cd cli && npm install && npm run build  (npm workspace; build needs the @paperclipai/* workspace packages)"],
+      "setup": ["Blocked: root package.json has NO 'workspaces' field but cli/package.json uses 'workspace:*' deps, so npm cannot link @paperclipai/* and esbuild is absent -> cli build fails. Needs the workspace field restored (or pnpm) before build."],
       "invoke_cli": "paperclipai",
       "skills": [],
-      "notes": "Repo also ships agent skills under .agents/skills (design-guide, paperclip) and .github skills."
+      "notes": "Repo also ships agent skills under .agents/skills (garden-inbox, paperclip-page, pr-gardening) and .claude/skills/design-guide + packages\\adapters\\hermes\\skills\\paperclip-task-bridge (both synced to agent-os\\skills)."
     },
     {
       "id": "memory-palace",
@@ -106,12 +117,12 @@
       "path": "D:\\StudioProjects\\memory-palace-with-brain",
       "kind": "web-app",
       "language": "node",
-      "status": "needs-setup",
+      "status": "ready",
       "summary": "Next.js 14 'memory palace' knowledge app (Mongo/Mongoose, OpenAI, PostHog, Cloudinary). Ships two reusable agent skills.",
       "interfaces": {
         "app": { "run": "npm run dev", "port": 3000, "build": "npm run build", "start": "npm start" }
       },
-      "setup": ["npm install", "copy .env.example -> .env.local and fill secrets"],
+      "setup": ["npm install  (DONE)", "copy .env.example -> .env.local and fill secrets to actually run"],
       "invoke_cli": "memory-palace",
       "skills": ["frontend-design", "integration-nextjs-app-router"]
     },
@@ -127,7 +138,7 @@
       "interfaces": {
         "credential_helper": { "config": "git config --global credential.helper manager", "binary": "git-credential-manager" }
       },
-      "setup": ["dotnet build (requires .NET SDK)", "then: git config --global credential.helper manager"],
+      "setup": ["needs .NET SDK to build (not verified present)", "then: git config --global credential.helper manager"],
       "invoke_cli": null,
       "skills": []
     }

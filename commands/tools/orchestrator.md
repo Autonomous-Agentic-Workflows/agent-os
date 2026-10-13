@@ -7,7 +7,7 @@ Unified REST API that routes tasks to CrewAI (analysis), AutoGen (conversation) 
 - **Repo**: `Autonomous-Agentic-Workflows/Orchestrator`
 - **Path**: `D:\StudioProjects\Orchestrator`
 - **Kind**: service (python)
-- **Status**: `needs-setup`
+- **Status**: `ready`
 - **CLI**: `orchestrator`
 
 ## Interfaces
@@ -31,13 +31,16 @@ Unified REST API that routes tasks to CrewAI (analysis), AutoGen (conversation) 
 
 ## Setup (if `status: needs-setup`)
 
-- `python -m pip install -e . (from repo root)`
-- `requires Google Cloud / Vertex AI credentials`
+- `uv pip install -e . + google-genai  (DONE into venv)`
 
 ## Secrets required
 
 - Google Cloud / Vertex AI service account
 - Google Workspace OAuth (via recovery-overseer)
+
+## Notes
+
+Core deps are just pydantic (+google-genai for the server); CrewAI/AutoGen/Aider are optional extras. Server uses stdlib http.server, no FastAPI.
 
 ## How agents use it
 

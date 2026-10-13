@@ -7,7 +7,7 @@ Microsoft framework for training/optimizing AI agents; ships the 'agl' CLI (stor
 - **Repo**: `Autonomous-Agentic-Workflows/agent-lightning`
 - **Path**: `D:\StudioProjects\agent-lightning`
 - **Kind**: cli+library (python)
-- **Status**: `needs-setup`
+- **Status**: `ready`
 - **CLI**: `agl`
 
 ## Interfaces
@@ -35,7 +35,7 @@ Microsoft framework for training/optimizing AI agents; ships the 'agl' CLI (stor
 
 ## Setup (if `status: needs-setup`)
 
-- `python -m pip install agentlightning  (or: pip install -e . from repo root)`
+- `uv pip install agentlightning  (DONE -> 1.0.2 from PyPI). NOTE: the repo's dev version (0.3.1) is Unix-only (gunicorn imports fcntl) and cannot import on Windows; use the PyPI build.`
 
 ## How agents use it
 

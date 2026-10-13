@@ -7,7 +7,7 @@ Modular FastAPI backend for AI-powered mind mapping with Neurite integration; ro
 - **Repo**: `Autonomous-Agentic-Workflows/GenAIMindMapFlowBuilder`
 - **Path**: `D:\StudioProjects\GenAIMindMapFlowBuilder`
 - **Kind**: service (python)
-- **Status**: `needs-setup`
+- **Status**: `ready`
 - **CLI**: `mindmap`
 
 ## Interfaces
@@ -28,7 +28,7 @@ Modular FastAPI backend for AI-powered mind mapping with Neurite integration; ro
 
 ## Setup (if `status: needs-setup`)
 
-- `python -m pip install -r backend/requirements_minimal.txt`
+- `backend/requirements_minimal.txt has a bad pin (starlette==1.3.1 conflicts with fastapi==0.104.1); installed with that line filtered -> starlette 0.27.0 (DONE)`
 
 ## Notes
 
