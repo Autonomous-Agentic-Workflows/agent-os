@@ -36,8 +36,9 @@ unavailable, use the PowerShell 7 ports instead - run them from the project
 directory you want to install into:
 
 ```powershell
-# install (default profile, or -Profile <name>)
+# install into the current directory (or target a project from anywhere)
 pwsh -File scripts/project-install.ps1 -Profile recovery -Force
+pwsh -File scripts/project-install.ps1 -Profile recovery -Project D:\StudioProjects\MasterRecovery3
 
 # update commands only
 pwsh -File scripts/project-install.ps1 -CommandsOnly

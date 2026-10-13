@@ -18,6 +18,10 @@
 .PARAMETER Profile
     Profile to install. Defaults to `default_profile` from config.yml.
 
+.PARAMETER Project
+    Project directory to install into. Defaults to the current directory.
+    Lets you run the installer from anywhere (including the base dir).
+
 .PARAMETER CommandsOnly
     Update commands only; leave existing standards untouched.
 
@@ -25,7 +29,7 @@
     Skip the interactive overwrite confirmation.
 
 .EXAMPLE
-    pwsh -File scripts/project-install.ps1 -Profile recovery -Force
+    pwsh -File scripts/project-install.ps1 -Profile recovery -Project D:\StudioProjects\MasterRecovery3
 
 .EXAMPLE
     pwsh -File scripts/project-install.ps1 -CommandsOnly
@@ -33,6 +37,7 @@
 [CmdletBinding(SupportsShouldProcess = $true)]
 param(
     [string]$Profile,
+    [string]$Project,
     [switch]$CommandsOnly,
     [switch]$Force
 )
@@ -41,7 +46,7 @@ $ErrorActionPreference = 'Stop'
 
 $script:ScriptDir  = Split-Path -Parent $MyInvocation.MyCommand.Path
 $script:BaseDir    = Split-Path -Parent $script:ScriptDir
-$script:ProjectDir = (Get-Location).Path
+$script:ProjectDir = if ($Project) { (Resolve-Path -LiteralPath $Project -ErrorAction Stop).Path } else { (Get-Location).Path }
 
 # -----------------------------------------------------------------------------
 # Output helpers

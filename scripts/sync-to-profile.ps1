@@ -19,6 +19,10 @@
 .PARAMETER NewProfile
     Create a new profile with these standards.
 
+.PARAMETER Project
+    Project directory to sync from (must contain agent-os/standards).
+    Defaults to the current directory.
+
 .PARAMETER All
     Sync all standards (skip the interactive file selection).
 
@@ -38,6 +42,7 @@
 param(
     [string]$Profile,
     [string]$NewProfile,
+    [string]$Project,
     [switch]$All,
     [switch]$Overwrite,
     [switch]$Force
@@ -47,7 +52,7 @@ $ErrorActionPreference = 'Stop'
 
 $script:ScriptDir  = Split-Path -Parent $MyInvocation.MyCommand.Path
 $script:BaseDir    = Split-Path -Parent $script:ScriptDir
-$script:ProjectDir = (Get-Location).Path
+$script:ProjectDir = if ($Project) { (Resolve-Path -LiteralPath $Project -ErrorAction Stop).Path } else { (Get-Location).Path }
 
 function Write-Section([string]$Text) { Write-Host ''; Write-Host "=== $Text ===" -ForegroundColor Cyan; Write-Host '' }
 function Write-Status ([string]$Text) { Write-Host $Text -ForegroundColor Cyan }
@@ -183,7 +188,9 @@ $conflicts = @($selected | Where-Object { Test-Path -LiteralPath (Join-Path $pro
 
 if ($conflicts.Count -gt 0) {
     if ($Overwrite -or $Force) {
-        Backup-Files -ProfileName $Profile -Files $conflicts
+        if ($PSCmdlet.ShouldProcess("profile '$Profile'", "Back up $($conflicts.Count) conflicting file(s)")) {
+            Backup-Files -ProfileName $Profile -Files $conflicts
+        }
     }
     else {
         Write-Host ''
@@ -196,7 +203,7 @@ if ($conflicts.Count -gt 0) {
             Write-Host '  2) Skip existing files'
             Write-Host '  3) Cancel'
             switch (Read-Host 'Choice (1-3)') {
-                '1' { Backup-Files -ProfileName $Profile -Files $conflicts; $done = $true }
+                '1' { if ($PSCmdlet.ShouldProcess("profile '$Profile'", "Back up $($conflicts.Count) conflicting file(s)")) { Backup-Files -ProfileName $Profile -Files $conflicts }; $done = $true }
                 '2' { $selected = @($selected | Where-Object { $conflicts -notcontains $_ }); $done = $true }
                 '3' { Write-Err 'Cancelled.'; exit 1 }
             }
