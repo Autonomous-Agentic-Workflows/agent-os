@@ -105,7 +105,7 @@
         "cli": { "bin": "paperclipai", "entry": "cli\\dist\\index.js", "dev": "npm run dev", "build": "npm run build" },
         "adapters": ["adapter-claude-local", "adapter-codex-local", "adapter-cursor-cloud", "adapter-cursor-local", "adapter-gemini-local", "adapter-grok-local", "adapter-opencode-local", "adapter-pi-local", "adapter-openclaw-gateway"]
       },
-      "setup": ["Blocked: root package.json has NO 'workspaces' field but cli/package.json uses 'workspace:*' deps, so npm cannot link @paperclipai/* and esbuild is absent -> cli build fails. Needs the workspace field restored (or pnpm) before build."],
+      "setup": ["Blocked (incomplete fork): cli/esbuild.config.mjs imports scripts/cli-bundled-npm-dependencies.mjs (MISSING), and bundles workspace paths packages/shared + @paperclipai/server (both MISSING). Root package.json also lacks a 'workspaces' field, while cli/package.json uses 'workspace:*' deps. Restore the missing paths from upstream before building."],
       "invoke_cli": "paperclipai",
       "skills": [],
       "notes": "Repo also ships agent skills under .agents/skills (garden-inbox, paperclip-page, pr-gardening) and .claude/skills/design-guide + packages\\adapters\\hermes\\skills\\paperclip-task-bridge (both synced to agent-os\\skills)."

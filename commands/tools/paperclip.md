@@ -36,7 +36,7 @@ Paperclip ('paperclipai') - app + CLI to orchestrate AI agent teams, with plugga
 
 ## Setup (if `status: needs-setup`)
 
-- `Blocked: root package.json has NO 'workspaces' field but cli/package.json uses 'workspace:*' deps, so npm cannot link @paperclipai/* and esbuild is absent -> cli build fails. Needs the workspace field restored (or pnpm) before build.`
+- `Blocked (incomplete fork): cli/esbuild.config.mjs imports scripts/cli-bundled-npm-dependencies.mjs (MISSING), and bundles workspace paths packages/shared + @paperclipai/server (both MISSING). Root package.json also lacks a 'workspaces' field, while cli/package.json uses 'workspace:*' deps. Restore the missing paths from upstream before building.`
 
 ## Notes
 
