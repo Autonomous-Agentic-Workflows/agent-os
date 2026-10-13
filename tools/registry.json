@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "updated": "2026-10-13",
+  "description": "Canonical cross-configuration registry. Each entry is an external repo wired as a usable tool for the agent fleet. Consumed by tools/mcp/fleet-tools (MCP server), commands/tools/*.md, and the MR3/MRA fleet registries.",
+  "toolchains": {
+    "node": { "path": "C:\\Program Files\\nodejs\\node.exe", "version": "v24.20.0" },
+    "npm": { "path": "C:\\Program Files\\nodejs\\npm.ps1", "global_bin": "C:\\Users\\jayla\\AppData\\Roaming\\npm" },
+    "python": { "path": "C:\\Users\\jayla\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe", "note": "WindowsApps shim; verify with 'py' or a real interpreter" }
+  },
+  "tools": [
+    {
+      "id": "orchestrator",
+      "name": "vertex_orchestrator",
+      "repo": "Autonomous-Agentic-Workflows/Orchestrator",
+      "path": "D:\\StudioProjects\\Orchestrator",
+      "kind": "service",
+      "language": "python",
+      "status": "needs-setup",
+      "summary": "Unified REST API that routes tasks to CrewAI (analysis), AutoGen (conversation) and Aider (edit) via Google Vertex AI. Hosts the recovery-overseer child service.",
+      "interfaces": {
+        "http": { "url": "http://localhost:8000", "run": "PYTHONPATH=src python -m vertex_orchestrator.server" },
+        "python_api": { "import": "vertex_orchestrator", "entry": "Orchestrator(config).execute(task_type, task)" },
+        "child_service": { "id": "recovery-overseer", "port": 3000 }
+      },
+      "setup": ["python -m pip install -e . (from repo root)", "requires Google Cloud / Vertex AI credentials"],
+      "invoke_cli": "orchestrator",
+      "skills": [],
+      "secrets": ["Google Cloud / Vertex AI service account", "Google Workspace OAuth (via recovery-overseer)"]
+    },
+    {
+      "id": "recovery-overseer",
+      "name": "recovery-overseer",
+      "repo": "Autonomous-Agentic-Workflows/Orchestrator",
+      "path": "D:\\StudioProjects\\Orchestrator\\recovery_overseer",
+      "kind": "mcp-server",
+      "language": "node",
+      "status": "needs-setup",
+      "summary": "Node/Express dashboard that also exposes a Model Context Protocol (JSON-RPC 2.0) server plus Google Workspace tools (Gmail, Slides, Tasks, Keep, Drive) and a Spark/Gemini analytics engine.",
+      "interfaces": {
+        "mcp_http": { "url": "http://localhost:3000/mcp", "proxy": "http://localhost:8000/overseer/mcp", "info": "http://localhost:8000/overseer/mcp/info" },
+        "http": { "dev": "npm run dev", "build": "npm run build", "start": "node dist/server.cjs", "port": 3000 }
+      },
+      "setup": ["cd recovery_overseer && npm install", "requires Google Workspace OAuth + Cloud SQL/Firebase env"],
+      "invoke_cli": null,
+      "skills": [],
+      "secrets": ["GOOGLE_* OAuth", "Cloud SQL / Firebase credentials", "GEMINI_API_KEY"]
+    },
+    {
+      "id": "genai-mindmap",
+      "name": "GenAIMindMapFlowBuilder",
+      "repo": "Autonomous-Agentic-Workflows/GenAIMindMapFlowBuilder",
+      "path": "D:\\StudioProjects\\GenAIMindMapFlowBuilder",
+      "kind": "service",
+      "language": "python",
+      "status": "needs-setup",
+      "summary": "Modular FastAPI backend for AI-powered mind mapping with Neurite integration; routers for flows, qa, ingestion, sql and nodes. React+Vite frontend.",
+      "interfaces": {
+        "http": { "url": "http://localhost:8000", "run": "uvicorn backend.app:app --reload", "swagger": "http://localhost:8000/docs" },
+        "frontend": { "path": "frontend", "run": "npm install && npm run dev" }
+      },
+      "setup": ["python -m pip install -r backend/requirements_minimal.txt"],
+      "invoke_cli": "mindmap",
+      "skills": [],
+      "notes": "Already agent-wired: GitHub-native Claude dispatch (.github/workflows/claude.yml), repository_dispatch 'claude-task', and a self-hosted 'genai-ollama-runner'."
+    },
+    {
+      "id": "agent-lightning",
+      "name": "agent-lightning",
+      "repo": "Autonomous-Agentic-Workflows/agent-lightning",
+      "path": "D:\\StudioProjects\\agent-lightning",
+      "kind": "cli+library",
+      "language": "python",
+      "status": "needs-setup",
+      "summary": "Microsoft framework for training/optimizing AI agents; ships the 'agl' CLI (store, vllm, prometheus, agentops) and example FastMCP retrievers.",
+      "interfaces": {
+        "cli": { "bin": "agl", "subcommands": ["store", "vllm", "prometheus", "agentops"] },
+        "python_api": { "import": "agentlightning" },
+        "example_mcp": { "path": "examples\\rag\\wiki_retriever_mcp.py", "framework": "fastmcp" }
+      },
+      "setup": ["python -m pip install agentlightning  (or: pip install -e . from repo root)"],
+      "invoke_cli": "agl",
+      "skills": []
+    },
+    {
+      "id": "paperclip",
+      "name": "paperclip-autonomous-agents",
+      "repo": "Autonomous-Agentic-Workflows/paperclip-autonomous-agents",
+      "path": "D:\\StudioProjects\\paperclip-autonomous-agents",
+      "kind": "cli",
+      "language": "node",
+      "status": "needs-setup",
+      "summary": "Paperclip ('paperclipai') - app + CLI to orchestrate AI agent teams, with pluggable adapters (claude-local, codex-local, cursor-cloud/local, gemini-local, grok-local, opencode-local, pi-local, openclaw-gateway).",
+      "interfaces": {
+        "cli": { "bin": "paperclipai", "entry": "cli\\dist\\index.js", "dev": "npm run dev", "build": "npm run build" },
+        "adapters": ["adapter-claude-local", "adapter-codex-local", "adapter-cursor-cloud", "adapter-cursor-local", "adapter-gemini-local", "adapter-grok-local", "adapter-opencode-local", "adapter-pi-local", "adapter-openclaw-gateway"]
+      },
+      "setup": ["cd cli && npm install && npm run build  (npm workspace; build needs the @paperclipai/* workspace packages)"],
+      "invoke_cli": "paperclipai",
+      "skills": [],
+      "notes": "Repo also ships agent skills under .agents/skills (design-guide, paperclip) and .github skills."
+    },
+    {
+      "id": "memory-palace",
+      "name": "memory-palace-with-brain",
+      "repo": "Autonomous-Agentic-Workflows/memory-palace-with-brain",
+      "path": "D:\\StudioProjects\\memory-palace-with-brain",
+      "kind": "web-app",
+      "language": "node",
+      "status": "needs-setup",
+      "summary": "Next.js 14 'memory palace' knowledge app (Mongo/Mongoose, OpenAI, PostHog, Cloudinary). Ships two reusable agent skills.",
+      "interfaces": {
+        "app": { "run": "npm run dev", "port": 3000, "build": "npm run build", "start": "npm start" }
+      },
+      "setup": ["npm install", "copy .env.example -> .env.local and fill secrets"],
+      "invoke_cli": "memory-palace",
+      "skills": ["frontend-design", "integration-nextjs-app-router"]
+    },
+    {
+      "id": "gcm",
+      "name": "git-credential-manager-8e947aa1",
+      "repo": "Autonomous-Agentic-Workflows/git-credential-manager-8e947aa1",
+      "path": "D:\\StudioProjects\\git-credential-manager-8e947aa1",
+      "kind": "system-tool",
+      "language": "dotnet",
+      "status": "needs-setup",
+      "summary": "Fork of Git Credential Manager (GCM) - secure credential helper for Git. Usable as a tool to manage/store git credentials without embedding tokens.",
+      "interfaces": {
+        "credential_helper": { "config": "git config --global credential.helper manager", "binary": "git-credential-manager" }
+      },
+      "setup": ["dotnet build (requires .NET SDK)", "then: git config --global credential.helper manager"],
+      "invoke_cli": null,
+      "skills": []
+    }
+  ]
+}

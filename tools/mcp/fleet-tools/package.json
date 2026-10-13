@@ -1,0 +1,14 @@
+{
+  "name": "@agent-os/fleet-tools-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Zero-dependency MCP (stdio) server exposing fleet tools from ../../registry.json",
+  "type": "module",
+  "bin": {
+    "fleet-tools-mcp": "./server.js"
+  },
+  "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  }
+}
