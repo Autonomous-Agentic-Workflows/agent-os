@@ -9,7 +9,7 @@ External repos registered as tools for the agent fleet. Canonical source:
 | recovery-overseer | `recovery-overseer` | mcp-server | `ready` |
 | genai-mindmap | `genai-mindmap` | service | `ready` |
 | agent-lightning | `agent-lightning` | cli+library | `ready` |
-| paperclip | `paperclip` | cli | `blocked` |
+| paperclip | `paperclip` | cli | `ready` |
 | memory-palace | `memory-palace` | web-app | `ready` |
 | gcm | `gcm` | system-tool | `needs-setup` |
 
